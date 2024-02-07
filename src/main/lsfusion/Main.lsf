@@ -1,0 +1,3 @@
+MODULE Main;
+
+REQUIRE Subject, Teacher, Class, Pupil;

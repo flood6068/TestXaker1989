@@ -1,0 +1,50 @@
+MODULE Teacher;
+
+REQUIRE Subject;
+
+//Описать класс “Учитель”, со следующими свойствами:
+//ФИО - строка длиною в 50 символов;
+//выбор какие предметы может вести - признак (свойство от двух объектов).
+//Написать форму отображения справочника (списка) Учителей (с возможностью добавления, редактирования, удаления объектов).
+//Написать форму для редактирования Учителя.
+//Объявить свойство для класса Учитель:
+//является ли классным руководителем (boolean).
+//Расширить формы списка и редактирования для учителя:
+//вывести свойство является ли классным руководителем;
+//добавить группу фильтров для отображения учителей только с признаков является классным руководителем (только для формы списка)
+
+CLASS Teacher 'Учитель';
+
+fio 'ФИО учителя' = DATA STRING[50] (Teacher) NONULL ;
+subject 'Предмет' = DATA Subject (Teacher) NONULL ;
+nameSubject 'Предмет' (Teacher t)= name(subject(t));
+isClassroomTeacher 'Классный руководитель' = DATA BOOLEAN (Teacher);
+fltIsClassroomTeacher 'Фильтр по классным руководителям' =  DATA LOCAL BOOLEAN;
+
+FORM teachers 'Учителя'
+    OBJECTS t = Teacher
+    PROPERTIES (t) fio, nameSubject, isClassroomTeacher
+    PROPERTIES (t) NEW, EDIT, DELETE
+;
+EXTEND FORM teachers
+    PROPERTIES () fltIsClassroomTeacher
+    FILTERS IF fltIsClassroomTeacher() THEN isClassroomTeacher(t) = fltIsClassroomTeacher() ELSE TRUE;
+;
+
+DESIGN teachers{
+    TOOLBARLEFT (t) {
+        MOVE PROPERTY (fltIsClassroomTeacher());
+    }
+}
+
+FORM teacher 'Учитель'
+    OBJECTS t = Teacher PANEL 
+    PROPERTIES (t) fio, nameSubject, isClassroomTeacher
+    EDIT Teacher OBJECT t
+;
+
+NAVIGATOR {
+    class {
+        NEW teachers;
+    }
+}

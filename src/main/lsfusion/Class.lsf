@@ -1,0 +1,41 @@
+MODULE Class;
+
+REQUIRE Subject, Teacher;
+
+//Описать класс “Класс”, со следующими свойствами:
+//номер - число (для вывода на форму редактирования объектов);
+//буква - строка длиною в один символ (для вывода на форму редактирования объектов);
+//номер и буква - содержит номер + букву Класса (для вывода на форму списка объектов);
+//профиль - Предмет (на формы вывести наименование профиля), добавить ограничение, чтобы можно было выбирать только предметы с признаком может быть профильным;
+//классный руководитель - Учитель (на формы вывести фио учителя).
+//Написать форму отображения справочника (списка) Классов (с возможностью добавления, редактирования, удаления объектов).
+//Написать форму для редактирования Класса.
+
+CLASS Class;
+number 'Номер' = DATA INTEGER (Class) NONULL ;
+letter 'Буква' = DATA STRING[1] (Class) NONULL ;
+numberLetter 'Номер и буква' (Class c) = number(c) + letter(c);
+subject 'Предмет' = DATA Subject (Class);
+profile 'Профиль' (Class s) = name(subject(s));
+CONSTRAINT profile (Class c) IF NOT isProfile(subject(c)) MESSAGE 'Предмет должен иметь признак профильного';
+classroomTeacher 'Классный руководитель' = DATA Teacher (Class) NONULL;
+nameClassroomTeacher 'Классный руководитель' (Class c)= fio(classroomTeacher(c));
+CONSTRAINT nameClassroomTeacher (Class s) IF NOT isClassroomTeacher(classroomTeacher(s)) MESSAGE 'Классный руководитель должен иметь признак классного руководителя';
+
+FORM classes 'Классы'
+    OBJECTS c = Class
+    PROPERTIES (c) numberLetter, profile, nameClassroomTeacher
+    PROPERTIES (c) NEW, EDIT, DELETE 
+;
+
+FORM class 'Класс'
+    OBJECTS c = Class PANEL 
+    PROPERTIES (c) number, letter, profile, nameClassroomTeacher
+    EDIT Class OBJECT c
+;
+
+NAVIGATOR {
+    class {
+        NEW classes;
+    }
+}

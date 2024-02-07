@@ -1,0 +1,55 @@
+MODULE Pupil;
+
+REQUIRE Class;
+
+//Описать класс “Ученик класса”, со следующими свойствами:
+//класс - Класс в котором учится ученик (на формы выводить не надо);
+//п/п - число (номер ученика в классе, PARTITION);
+//ФИО - строка длиною в 50 символов.
+//Объявить свойство для класса Класс:
+//количество учеников в классе - подсчитать количество учеников в классе, GROUP SUM.
+//Расширить форму редактирования Класса:
+//вывести свойство количество учеников в классе;
+//вывести список учащихся учеников в данном классе (свойства п/п и ФИО);
+//добавить возможность добавлять, удалять объекты (учеников класса).
+//Расширить форму списка Класса:
+//вывести свойство количество учеников в классе;
+
+CLASS Pupil;
+
+class 'Класс' = DATA Class (Pupil) NONULL DELETE ;
+nameClass 'Класс' (Pupil p) = numberLetter(class(p)) NONULL ;
+number 'п/п' (Pupil p) = PARTITION SUM 1 ORDER p BY class(p);
+fio 'ФИО ученика' = DATA STRING[50] (Pupil) NONULL ;
+pupilQuantity 'Количество учеников в классе' (Class c) = GROUP SUM 1 BY class(Pupil p);
+
+FORM pupils 'Ученики'
+    OBJECTS p = Pupil
+    PROPERTIES (p) number, fio, nameClass
+    PROPERTIES (p) NEW, EDIT, DELETE
+;
+
+FORM pupil 'Ученик'
+    OBJECTS p = Pupil PANEL 
+    PROPERTIES (p) number, fio, nameClass
+    EDIT Pupil OBJECT p
+;
+
+
+EXTEND FORM class
+    PROPERTIES (c) pupilQuantity
+    OBJECTS p = Pupil
+    PROPERTIES (p) number, fio, nameClass
+    PROPERTIES (p) NEW, EDIT, DELETE
+    FILTERS class(p) = c;
+;
+
+EXTEND FORM classes
+    PROPERTIES (c) pupilQuantity
+;
+
+NAVIGATOR {
+    class{
+        NEW pupils;
+    }
+}

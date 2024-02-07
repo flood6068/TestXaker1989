@@ -1,0 +1,44 @@
+MODULE Subject;
+
+//Описать класс “Предмет” (дисциплина), со следующими свойствами:
+//наименование - строка длиною в 25 символов;
+//может ли быть профильным - признак (boolean).
+//Написать форму отображения справочника (списка) Предметов (с возможностью добавления, редактирования, удаления объектов)
+//Написать форму для редактирования Предмета.
+CLASS Subject 'Предмет';
+
+name 'Наименование предмета' = DATA STRING[25] (Subject) NONULL ;
+isProfile 'Может быть профильным' = DATA BOOLEAN (Subject);
+fltIsProfile 'Фильтр по профильным' = DATA LOCAL BOOLEAN;
+
+FORM subjects 'Предметы'
+    OBJECTS s = Subject
+    PROPERTIES (s) name, isProfile
+    PROPERTIES (s) NEW, EDIT, DELETE
+;
+
+EXTEND FORM subjects
+    PROPERTIES () fltIsProfile
+    FILTERS IF fltIsProfile() THEN isProfile(s) = fltIsProfile() ELSE TRUE;
+;
+
+DESIGN subjects{
+    TOOLBARLEFT (s){
+        MOVE PROPERTY (fltIsProfile());
+    }
+}
+
+FORM subject 'Предмет'
+    OBJECTS s = Subject PANEL 
+    PROPERTIES (s) name, isProfile
+    EDIT Subject OBJECT s
+;
+
+NAVIGATOR {
+    NEW FOLDER class 'Класс' WINDOW toolbar FIRST{
+        NEW FORM subjects;
+    }
+}
+
+
+
