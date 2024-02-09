@@ -9,24 +9,29 @@ CLASS Subject 'Предмет';
 
 name 'Наименование предмета' = DATA STRING[25] (Subject) NONULL ;
 isProfile 'Может быть профильным' = DATA BOOLEAN (Subject);
-fltIsProfile 'Фильтр по профильным' = DATA LOCAL BOOLEAN;
+//fltIsProfile 'Фильтр по профильным' = DATA LOCAL BOOLEAN;
 
 FORM subjects 'Предметы'
     OBJECTS s = Subject
     PROPERTIES (s) name, isProfile
     PROPERTIES (s) NEW, EDIT, DELETE
 ;
+//Реализация фильтра через дополнительную переменную
+//EXTEND FORM subjects
+//    PROPERTIES () fltIsProfile
+//    FILTERS IF fltIsProfile() THEN isProfile(s) = fltIsProfile() ELSE TRUE;
+//;
 
 EXTEND FORM subjects
-    PROPERTIES () fltIsProfile
-    FILTERS IF fltIsProfile() THEN isProfile(s) = fltIsProfile() ELSE TRUE;
+    FILTERGROUP in FILTER 'Только профильные' isProfile(s)
 ;
 
-DESIGN subjects{
-    TOOLBARLEFT (s){
-        MOVE PROPERTY (fltIsProfile());
-    }
-}
+//При реализации через дополнительную переменную требуются манипуляции с дизайном, а при FILTERGROUP - нет
+//DESIGN subjects{
+//    TOOLBARLEFT (s){
+//        MOVE PROPERTY (fltIsProfile());
+//    }
+//}
 
 FORM subject 'Предмет'
     OBJECTS s = Subject PANEL 

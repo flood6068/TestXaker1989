@@ -20,6 +20,9 @@ profile 'Профиль' (Class s) = name(subject(s));
 CONSTRAINT profile (Class c) IF NOT isProfile(subject(c)) MESSAGE 'Предмет должен иметь признак профильного';
 classroomTeacher 'Классный руководитель' = DATA Teacher (Class) NONULL;
 nameClassroomTeacher 'Классный руководитель' (Class c)= fio(classroomTeacher(c));
+
+isClassroomTeacher 'Классный руководитель' (Teacher t) = TRUE IF (GROUP MAX Class c IF classroomTeacher(c) == t);
+
 CONSTRAINT nameClassroomTeacher (Class s) IF NOT isClassroomTeacher(classroomTeacher(s)) MESSAGE 'Классный руководитель должен иметь признак классного руководителя';
 
 FORM classes 'Классы'
@@ -32,6 +35,15 @@ FORM class 'Класс'
     OBJECTS c = Class PANEL 
     PROPERTIES (c) number, letter, profile, nameClassroomTeacher
     EDIT Class OBJECT c
+;
+
+EXTEND FORM teachers
+    PROPERTIES (t) READONLY isClassroomTeacher
+    FILTERGROUP in FILTER 'Только классные руководители' isClassroomTeacher(t)
+;
+
+EXTEND FORM teacher
+    PROPERTIES (t) isClassroomTeacher
 ;
 
 NAVIGATOR {

@@ -18,28 +18,28 @@ CLASS Teacher 'Учитель';
 fio 'ФИО учителя' = DATA STRING[50] (Teacher) NONULL ;
 subject 'Предмет' = DATA Subject (Teacher) NONULL ;
 nameSubject 'Предмет' (Teacher t)= name(subject(t));
-isClassroomTeacher 'Классный руководитель' = DATA BOOLEAN (Teacher);
-fltIsClassroomTeacher 'Фильтр по классным руководителям' =  DATA LOCAL BOOLEAN;
+
+//fltIsClassroomTeacher 'Фильтр по классным руководителям' =  DATA LOCAL BOOLEAN;
 
 FORM teachers 'Учителя'
     OBJECTS t = Teacher
-    PROPERTIES (t) fio, nameSubject, isClassroomTeacher
+    PROPERTIES (t) fio, nameSubject
     PROPERTIES (t) NEW, EDIT, DELETE
 ;
-EXTEND FORM teachers
-    PROPERTIES () fltIsClassroomTeacher
-    FILTERS IF fltIsClassroomTeacher() THEN isClassroomTeacher(t) = fltIsClassroomTeacher() ELSE TRUE;
-;
+//EXTEND FORM teachers
+//    PROPERTIES () fltIsClassroomTeacher
+//    FILTERS IF fltIsClassroomTeacher() THEN isClassroomTeacher(t) = fltIsClassroomTeacher() ELSE TRUE;
+//;
 
-DESIGN teachers{
-    TOOLBARLEFT (t) {
-        MOVE PROPERTY (fltIsClassroomTeacher());
-    }
-}
+//DESIGN teachers{
+//    TOOLBARLEFT (t) {
+//        MOVE PROPERTY (fltIsClassroomTeacher());
+//    }
+//}
 
 FORM teacher 'Учитель'
     OBJECTS t = Teacher PANEL 
-    PROPERTIES (t) fio, nameSubject, isClassroomTeacher
+    PROPERTIES (t) fio, nameSubject
     EDIT Teacher OBJECT t
 ;
 
